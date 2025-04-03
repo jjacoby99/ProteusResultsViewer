@@ -77,7 +77,8 @@ if uploaded_file is not None:
             selected_connection = st.selectbox("Select a connection", connection_names)
             connection_index = connection_names.index(selected_connection)
 
-            cols_to_use = determine_columns(connection_index)
+            cols_per_group = 12 if uploaded_file.name == "rigidBodyABAConnection.dat" else 6
+            cols_to_use = determine_columns(connection_index, cols_per_group)
         else:
             # For non-connection files, assume the header is on line 3 (index 2)
             uploaded_file.seek(0)
