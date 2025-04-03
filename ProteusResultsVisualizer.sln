@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35327.3
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "ProteusResultsVisualizer", "ProteusResultsVisualizer\ProteusResultsVisualizer.pyproj", "{2D36ACA3-67A6-44BE-91AA-B64849D07888}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2D36ACA3-67A6-44BE-91AA-B64849D07888}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D36ACA3-67A6-44BE-91AA-B64849D07888}.Release|Any CPU.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {03CFE2F4-105F-481A-976A-2CA18F39B481}
+	EndGlobalSection
+EndGlobal
