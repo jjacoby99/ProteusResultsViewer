@@ -1,9 +1,7 @@
 import streamlit as st
 import plotly.express as px
 import plotly.graph_objects as go
-
 import pandas as pd
-import matplotlib.pyplot as plt
 from FileType import is_connection, get_skip_rows, supported_file_types
 from GetColumns import GetColumns
 
@@ -12,6 +10,8 @@ FORCE_UNITS = ["N", "kN", "MN", "T", "kg", "lbf", "kip"]
 MOMENT_UNITS = ["N-m", "kN-m", "MN-m", "lb-ft", "lb-in", "kip-ft"]
 LIN_UNITS = ["m", "mm", "cm", "ft", "in"]
 ANG_UNITS = ["deg", "rad"]
+
+
 
 st.title("ProteusDS Data Visualization Tool")
 
