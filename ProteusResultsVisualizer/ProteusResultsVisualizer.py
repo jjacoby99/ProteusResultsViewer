@@ -4,6 +4,7 @@ import plotly.graph_objects as go
 import pandas as pd
 from FileType import is_connection, get_skip_rows, supported_file_types
 from GetColumns import GetColumns
+from UserFunction import add_computed_column
 
 # Constants for units (can be moved to a config file if they grow)
 FORCE_UNITS = ["N", "kN", "MN", "T", "kg", "lbf", "kip"]
@@ -102,6 +103,36 @@ if uploaded_file is not None:
 
         # Set DataFrame columns using GetColumns helper
         df.columns = GetColumns(uploaded_file.name, len(df.columns))
+
+        # Optional section for creating a computed column
+        if st.checkbox("Create a new computed column?"):
+            st.write("### New Computed Column Settings")
+
+            # Let the user select which columns to use in the formula
+            selected_columns = st.multiselect("Select columns to use in your formula", df.columns.tolist())
+
+            # Input field for the formula (e.g., "np.sqrt(dx**2 + dy**2)")
+            formula = st.text_input("Enter formula (e.g., np.sqrt(dx**2 + dy**2))", value="")
+
+            # Input field for the new column name
+            new_column_name = st.text_input("New column name", value="Computed")
+
+            if st.button("Add Computed Column"):
+                if not selected_columns:
+                    st.error("Please select at least one column.")
+                elif not formula:
+                    st.error("Please enter a formula.")
+                else:
+                    try:
+                        df = add_computed_column(df, selected_columns, formula, new_column_name)
+                        st.success(f"Column '{new_column_name}' added!")
+                        st.session_state['df'] = df
+                    except ValueError as e:
+                        st.error(e)
+
+        # Use the session state DataFrame if it exists
+        if 'df' in st.session_state:
+            df = st.session_state['df']
 
         st.dataframe(df.head())
         st.markdown("---")

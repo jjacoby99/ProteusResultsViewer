@@ -75,30 +75,30 @@ def GetColumns(filename: str, num_columns: int):
             columns.append(f"T_{i} [N]")
         return columns
     if filename == "position.dat":
-        columns = ["t [s]", "x [m]", "y [m]", "z [m]", "phi [deg]", "theta [deg]", "psi [deg]"]
+        columns = ["t", "x", "y", "z", "phi", "theta", "psi"]
         return columns
 
     if filename == "forces.dat":
-        columns = ["t [s]", "FXG [N]", "FYG [N]", "FZG [N]", "MXG [N]", "MYG [N]", "MZG [N]", "FX [N]", "FY [N]", "FZ [N]", "MX [N]", "MY [N]", "MZ [N]"]
+        columns = ["t", "FXG", "FYG", "FZG", "MXG", "MYG", "MZG", "FX", "FY", "FZ", "MX", "MY", "MZ"]
         return columns
 
     if filename == "rigidBodyForceConnection.dat":
-        columns = ["t [s]", "dx [m]", "dy [m]", "dz [m]", "Fx [N]", "Fy [N]", "Fz [N]"]
+        columns = ["t", "dx", "dy", "dz", "Fx", "Fy", "Fz"]
         return columns
 
     if filename == "rigidBodyMomentConnection.dat":
-        columns = ["t [s]", "rx [deg]", "ry [deg]", "rz [deg]", "Mx [Nm]", "My [Nm]", "Mz [Nm]"]
+        columns = ["t", "rx", "ry", "rz", "Mx", "My", "Mz"]
         return columns
 
     if filename == "reactionLoads.dat":
-        columns = ["t [s]", "FX0 [N]", "FY0 [N]", "FZ0 [N]", "MX0 [Nm]", "MY0 [Nm]", "MZ0 [Nm]", "FXN [N]", "FYN [N]", "FZN [N]", "MXN [Nm]", "MYN [Nm]", "MZN [Nm]"]
+        columns = ["t", "FX0", "FY0", "FZ0", "MX0", "MY0", "MZ0", "FXN", "FYN", "FZN", "MXN", "MYN", "MZN"]
         return columns
 
     if filename == "rigidBodyABAConnection.dat":
-        columns = ["t [s]", "FXu [N]", "FYu [N]", "FZu [N]", "MXu [Nm]", "MYu [Nm]", "MZu [Nm]", "FXd [N]", "FYd [N]", "FZd [N]", "MXd [Nm]", "MYd [Nm]", "MZd [Nm]"]
+        columns = ["t", "FXu", "FYu", "FZu", "MXu", "MYu", "MZu", "FXd", "FYd", "FZd", "MXd", "MYd", "MZd"]
         return columns
 
     if filename == "cablePointConnection.dat":
-        columns = ["t [s]", "Fx [N]", "Fy [N]", "Fz [N]", "Mx [Nm]", "My [Nm]", "Mz [Nm]"]
+        columns = ["t", "Fx", "Fy", "Fz", "Mx", "My", "Mz"]
         return columns
     return columns
