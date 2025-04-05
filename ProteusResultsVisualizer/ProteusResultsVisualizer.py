@@ -126,8 +126,13 @@ if uploaded_file is not None:
                     try:
                         df = add_computed_column(df, selected_columns, formula, new_column_name)
                         st.success(f"Column '{new_column_name}' added!")
+                        st.session_state['df'] = df
                     except ValueError as e:
                         st.error(e)
+
+        # Use the session state DataFrame if it exists
+        if 'df' in st.session_state:
+            df = st.session_state['df']
 
         st.dataframe(df.head())
         st.markdown("---")
