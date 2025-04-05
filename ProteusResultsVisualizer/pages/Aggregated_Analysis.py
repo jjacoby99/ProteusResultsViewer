@@ -1,6 +1,10 @@
+from argparse import FileType
 import streamlit as st
 import os
 import pandas as pd
+from ProteusResultsVisualizer import is_connection, supported_file_types, not_feature_dirs, feature_paths, load_dataframe
+from ProteusResultsVisualizer.aggregators.Aggregators import ComponentWiseExtremaAggregator, MeanAggregator
+
 
 st.title("Aggregated Analysis Across Cases and Realizations")
 
@@ -15,10 +19,9 @@ st.markdown(
 )
 
 # Directory selection using the file selector component
-base_folder = st.text_input("Enter the path to the base folder", value="/path/to/base/folder")
+base_folder = st.text_input("Enter the path to the base folder", value="/Users/joshjacoby/Downloads/Sim1_results")
 
 if base_folder:
-    st.write("Selected base folder:", base_folder)
     if os.path.isdir(base_folder):
         # (The rest of your folder traversal and aggregation logic goes here)
         case_folders = sorted(
@@ -33,6 +36,47 @@ if base_folder:
 
         st.write(f"Found {len(case_folders)} cases and {len(realization_folders)} realizations.")
 
-        # ... continue as before ...
+        results_folder = os.path.join(realization_folders[0], "Results")
+        feature_folders = sorted(
+            [os.path.join(results_folder, d) for d in os.listdir(results_folder)
+             if os.path.isdir(os.path.join(results_folder, d))]
+        )
+        feature_names = [os.path.basename(file) for file in feature_folders
+                         if os.path.basename(file) not in not_feature_dirs()]
+
+        feature = st.selectbox("Select feature", feature_names)
+
+        selected_feature_path = os.path.join(results_folder, feature)
+        supported_files = sorted(
+            [os.path.basename(folder) for folder in os.listdir(selected_feature_path)
+             if os.path.basename(folder) in supported_file_types()]
+        )
+
+        file_type = st.selectbox("Select file type", supported_files)
+
+        all_file_paths = feature_paths(base_folder, feature, file_type)
+        assert len(all_file_paths) == len(realization_folders) * len(case_folders)
+
+        st.markdown('### Analysis')
+        st.markdown('Select data-aggregation type')
+
+        aggregation_type = st.radio(
+            "Select aggregation method",
+            options=[
+                "Component-wise Maxima/Minima",
+                "Average",
+                "Median",
+                "Custom (select columns)"
+            ]
+        )
+
+        if aggregation_type == "Component-wise Maxima/Minima":
+            aggregator = ComponentWiseExtremaAggregator
+        if aggregation_type == "Average":
+            aggregator = MeanAggregator
+
+        for file in all_file_paths:
+            df = load_dataframe(file)
+
     else:
         st.error("The selected path is not a valid directory.")
