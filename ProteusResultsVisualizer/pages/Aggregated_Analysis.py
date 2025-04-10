@@ -3,8 +3,9 @@ import streamlit as st
 import os
 import pandas as pd
 from ProteusResultsVisualizer import is_connection, supported_file_types, not_feature_dirs, feature_paths, load_dataframe
-from ProteusResultsVisualizer.aggregators.Aggregators import ComponentWiseExtremaAggregator, MeanAggregator
-
+from ProteusResultsVisualizer import Aggregator, ComponentWiseExtremaAggregator, MeanAggregator
+from ProteusResultsVisualizer import initialize_dataframe
+from ProteusResultsVisualizer import file_path_to_uploaded_file
 
 st.title("Aggregated Analysis Across Cases and Realizations")
 
@@ -71,12 +72,23 @@ if base_folder:
         )
 
         if aggregation_type == "Component-wise Maxima/Minima":
-            aggregator = ComponentWiseExtremaAggregator
+            aggregator = ComponentWiseExtremaAggregator()
         if aggregation_type == "Average":
-            aggregator = MeanAggregator
+            aggregator = MeanAggregator()
 
-        for file in all_file_paths:
-            df = load_dataframe(file)
+        real_results = {}
+        df = initialize_dataframe(file_path_to_uploaded_file(all_file_paths[0]),"key")
+        st.markdown('### Data Preview')
+        st.dataframe(df.head())
+        #for i, file in enumerate(all_file_paths):
+        #    st.markdown(f'Given file path: {file}')
+        #    df = initialize_dataframe(file_path_to_uploaded_file(file), f"cols_to_skip_agg_{i}")
+
+        #    if 'df' in st.session_state:
+        #        df = st.session_state['df']
+
+        #    result = aggregator.aggregate(df)
+        #    real_results[file] = result
 
     else:
         st.error("The selected path is not a valid directory.")
