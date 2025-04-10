@@ -53,3 +53,16 @@ def feature_paths(base_folder: str, feature: str, filename: str):
                     file_paths.append(file_path)
     return file_paths
 
+
+import os
+from io import BytesIO
+
+def file_path_to_uploaded_file(file_path: str):
+    # Open the file in binary mode
+    with open(file_path, "rb") as f:
+        data = f.read()
+    # Wrap the bytes in a BytesIO object
+    file_obj = BytesIO(data)
+    # Add a name attribute to mimic the uploaded file object
+    file_obj.name = os.path.basename(file_path)
+    return file_obj
