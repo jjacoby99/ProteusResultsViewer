@@ -2,10 +2,10 @@ import streamlit as st
 import plotly.express as px
 import plotly.graph_objects as go
 import pandas as pd
-from FileType import is_connection, get_skip_rows, supported_file_types, not_feature_dirs, feature_paths
+from FileType import is_connection, get_skip_rows, supported_file_types, not_feature_dirs, feature_paths, file_path_to_uploaded_file
 from GetColumns import GetColumns
 from UserFunction import add_computed_column
-
+from aggregators.Aggregators import Aggregator, MeanAggregator, ComponentWiseExtremaAggregator
 
 # Constants for units (can be moved to a config file if they grow)
 FORCE_UNITS = ["N", "kN", "MN", "T", "kg", "lbf", "kip"]
@@ -48,7 +48,7 @@ def load_dataframe(uploaded_file, delimiter: str, skip: int, usecols: list) -> p
     uploaded_file.seek(0)
     return pd.read_csv(uploaded_file, delimiter=delimiter, skiprows=skip, header=None, usecols=usecols)
 
-def initialize_dataframe(uploaded_file) -> pd.DataFrame:
+def initialize_dataframe(uploaded_file, key) -> pd.DataFrame:
     base_skip = get_skip_rows(uploaded_file.name)
     if is_connection(uploaded_file.name):
         uploaded_file.seek(0)
@@ -57,7 +57,7 @@ def initialize_dataframe(uploaded_file) -> pd.DataFrame:
             st.stop()
 
         # User selects a connection
-        selected_connection = st.selectbox("Select a connection", connection_names)
+        selected_connection = st.selectbox("Select a connection", connection_names, key=key)
         connection_index = connection_names.index(selected_connection)
 
         cols_per_group = 12 if uploaded_file.name == "rigidBodyABAConnection.dat" else 6
@@ -77,7 +77,7 @@ def initialize_dataframe(uploaded_file) -> pd.DataFrame:
 
     # Ask user for additional rows to skip after header
     st.write("### Data Preview")
-    rows_to_skip = st.number_input("Rows to skip", min_value=0, value=0, step=1)
+    rows_to_skip = st.number_input("Rows to skip", min_value=0, value=0, step=1, key=f"rows_to_skip_{key}")
     total_skip = base_skip + int(rows_to_skip)
 
     # Load the DataFrame (assuming space-delimited data)
@@ -87,17 +87,17 @@ def initialize_dataframe(uploaded_file) -> pd.DataFrame:
     df.columns = GetColumns(uploaded_file.name, len(df.columns))
 
     # Optional section for creating a computed column
-    if st.checkbox("Create a new computed column?"):
+    if st.checkbox("Create a new computed column?", key=f"new_column_{key}"):
         st.write("### New Computed Column Settings")
 
         # Let the user select which columns to use in the formula
-        selected_columns = st.multiselect("Select columns to use in your formula", df.columns.tolist())
+        selected_columns = st.multiselect("Select columns to use in your formula", df.columns.tolist(), key=f"selected_columns_{key}")
 
         # Input field for the formula (e.g., "np.sqrt(dx**2 + dy**2)")
-        formula = st.text_input("Enter formula (e.g., np.sqrt(dx**2 + dy**2))", value="")
+        formula = st.text_input("Enter formula (e.g., np.sqrt(dx**2 + dy**2))", value="", key=f"formula_{key}")
 
         # Input field for the new column name
-        new_column_name = st.text_input("New column name", value="Computed")
+        new_column_name = st.text_input("New column name", value="Computed", key=f"new_column_name_{key}")
 
         if st.button("Add Computed Column"):
             if not selected_columns:
@@ -130,7 +130,7 @@ def main():
         if not uploaded_file.name in supported_file_names:
                 st.write(f"Unsupported file name: '{uploaded_file.name}'. Please select a supported file.")
         else:
-            df = initialize_dataframe(uploaded_file)
+            df = initialize_dataframe(uploaded_file, "cols_to_skip_single")
 
             # Use the session state DataFrame if it exists
             if 'df' in st.session_state:
